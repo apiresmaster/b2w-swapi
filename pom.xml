@@ -14,6 +14,7 @@
     <properties>
         <junit.platform.version>1.0.1</junit.platform.version>
         <junit.jupiter.version>5.0.1</junit.jupiter.version>
+		<hibernate.version>5.2.9.Final</hibernate.version>
     </properties>
 
     <dependencies>
@@ -26,6 +27,10 @@
             <artifactId>spring-boot-starter-tomcat</artifactId>
             <scope>provided</scope>
         </dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-jpa</artifactId>
+		</dependency>
         <dependency>
             <groupId>org.json</groupId>
             <artifactId>json</artifactId>
@@ -55,6 +60,25 @@
             <version>${junit.platform.version}</version>
             <scope>test</scope>
         </dependency>
+
+		<!-- JPA -->
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-entitymanager</artifactId>
+			<version>${hibernate.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-java8</artifactId>
+			<version>${hibernate.version}</version>
+		</dependency>
+		
+		<!-- H2 - Temporário -->
+		<dependency>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+		</dependency>
     </dependencies>
 
     <build>
