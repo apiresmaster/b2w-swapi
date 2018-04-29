@@ -1,19 +1,23 @@
 package br.com.coutinho.b2w.swapi.repository;
 
-import java.util.List;
-
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import br.com.coutinho.b2w.swapi.entity.Planet;
 
+/**
+ * Planet JPA repository
+ * 
+ * @author Rafael Coutinho
+ *
+ */
 public interface PlanetRepository extends JpaRepository<Planet, Long> {
 	
 	/**
 	 * Find a planet by name
 	 * 
 	 * @param name Planet name
-	 * @return Planet list
+	 * @return Planet
 	 */
-	List<Planet> findByName(String name);
+	Planet findByName(String name);
 
 }

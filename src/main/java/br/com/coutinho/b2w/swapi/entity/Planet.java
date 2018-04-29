@@ -8,11 +8,19 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
+/**
+ * Planet JPA entity
+ * 
+ * @author Rafael Coutinho
+ *
+ */
 @Entity
 @Table(name = "planet")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Planet {
 
 	@Id
@@ -20,7 +28,7 @@ public class Planet {
 	@Column(name = "id")
 	private Long id;
 
-	@Column(name = "name", nullable = false)
+	@Column(name = "name", nullable = false, unique = true)
 	private String name;
 
 	@Column(name = "climate", nullable = false)
