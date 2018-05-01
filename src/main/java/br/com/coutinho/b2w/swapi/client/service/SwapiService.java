@@ -30,11 +30,14 @@ public class SwapiService {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(SwapiService.class);
 	
-	@Value("${services.url.swapi}")
+	@Value("${services.swapi.url}")
 	private String swapiUrl;
 	
-	@Value("${services.operation.swapi.planets}")
+	@Value("${services.swapi.operation.planets}")
 	private String planetOperation;
+	
+	@Value("${services.config.useragent}")
+	private String userAgent;
 	
 	/**
 	 * Get a hash map with the number of appearances in films per planet
@@ -62,7 +65,7 @@ public class SwapiService {
         HttpHeaders headers = new HttpHeaders();
         headers.setAccept(Arrays.asList(new MediaType[] { MediaType.APPLICATION_JSON }));
         headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.add("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36");
+        headers.add("user-agent", userAgent);
  
         HttpEntity<SwapiPlanetSearchResultModel> entity = new HttpEntity<SwapiPlanetSearchResultModel>(headers);
  
