@@ -2,6 +2,8 @@ package br.com.coutinho.b2w.swapi.service;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import br.com.coutinho.b2w.swapi.entity.Planet;
 import br.com.coutinho.b2w.swapi.exception.ValidationException;
+import br.com.coutinho.b2w.swapi.model.PlanetModel;
 import br.com.coutinho.b2w.swapi.model.PlanetSearchResultModel;
 import br.com.coutinho.b2w.swapi.repository.PlanetRepository;
 
@@ -32,18 +35,29 @@ public class PlanetService {
 	@Autowired
 	private PlanetRepository planetRepository;
 	
+	@Autowired
+	private SwapiCacheService swapiCacheService;
+	
+	/**
+	 * Find all planets in database
+	 * 
+	 * @param pageRequest Pageable configuration
+	 * @param apiUrl String with API URL
+	 * @return PlanetSearchResultModel
+	 * @throws ValidationException
+	 */
 	public PlanetSearchResultModel findAll(Pageable pageRequest, String apiUrl) throws ValidationException {
 		Page<Planet> listPlanets = planetRepository.findAll(pageRequest);
 		
 		//Validate
-		if (pageRequest.getPageNumber() + 1 > listPlanets.getTotalPages()) {
+		if (listPlanets.hasContent() && pageRequest.getPageNumber() + 1 > listPlanets.getTotalPages()) {
 			throw new ValidationException("Invalid page number");
 		}
 		
 		//Build result
 		PlanetSearchResultModel result = new PlanetSearchResultModel();
 		result.setCount(listPlanets.getTotalElements());
-		result.setResults(listPlanets.getContent());
+		result.setResults(getPlanetEntityToModelList(listPlanets.getContent()));
 		try {
 			if (pageRequest.getPageNumber() > 0) {
 				result.setPrevious(getPaginationUrl(apiUrl, pageRequest.getPageNumber()-1, pageRequest.getPageSize()));
@@ -56,6 +70,19 @@ public class PlanetService {
 		}
 		
 		return result;
+	}
+	
+	private List<PlanetModel> getPlanetEntityToModelList(List<Planet> planetList) {
+		if (planetList != null) {
+			List<PlanetModel> modelList = new ArrayList<PlanetModel>();
+			for (Planet planet : planetList) {
+				PlanetModel model = planet.toModel();
+				model.setFilmAppearancesNumber(swapiCacheService.getFilmAppearancesByPlanetName(model.getName()));
+				modelList.add(model);
+			}
+			return modelList;
+		}
+		return null;
 	}
 	
 	private String getPaginationUrl(String url, Integer page, Integer size) throws URISyntaxException {
@@ -74,25 +101,50 @@ public class PlanetService {
 	                   uri.getFragment()).toString();
 	}
 	
-	public Planet findPlanetByQuery(String planetQuery) {
+	/**
+	 * Find a planet by a query search
+	 * 
+	 * @param planetQuery String with a search query
+	 * @return PlanetModel
+	 */
+	public PlanetModel findPlanetByQuery(String planetQuery) {
+		Planet planet;
 		try {
 			Long planetId = Long.valueOf(planetQuery);
-			return planetRepository.findOne(planetId);
+			planet = planetRepository.findOne(planetId);
 		} catch (NumberFormatException nfe) {
 			LOGGER.error("Error while converting planet query to long. Trying to get planet by name.");
-			return planetRepository.findByName(planetQuery);
+			planet = planetRepository.findByName(planetQuery);
 		}
+		if (planet != null) {
+			PlanetModel model = planet.toModel();
+			model.setFilmAppearancesNumber(swapiCacheService.getFilmAppearancesByPlanetName(model.getName()));
+			return model;
+		}
+		return null;
 	}
 	
+	/**
+	 * Save a new planet in database
+	 * 
+	 * @param newPlanet New planet to be saved
+	 * @return Planet
+	 * @throws ValidationException
+	 */
 	@Transactional
-	public Planet save(Planet newPlanet) throws ValidationException {
+	public PlanetModel save(PlanetModel newPlanet) throws ValidationException {
 		//Validate
 		if (newPlanet == null || (newPlanet != null && newPlanet.getId() != null)) {
 			throw new ValidationException("Invalid object to save");
 		}
-		return planetRepository.save(newPlanet);
+		return planetRepository.save(newPlanet.toEntity()).toModel();
 	}
 
+	/**
+	 * Delete a planet in database by ID
+	 * 
+	 * @param planetId ID of a planet to be deleted
+	 */
 	@Transactional
 	public void delete(Long planetId) {
 		planetRepository.delete(planetId);

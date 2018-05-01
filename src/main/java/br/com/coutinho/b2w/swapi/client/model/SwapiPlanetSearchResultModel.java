@@ -1,28 +1,25 @@
-package br.com.coutinho.b2w.swapi.model;
+package br.com.coutinho.b2w.swapi.client.model;
 
 import java.io.Serializable;
 import java.util.List;
 
 /**
- * Model class for planet search result
+ * Star Wars API - Planet search result model
  * 
  * @author Rafael Coutinho
  *
  */
-public class PlanetSearchResultModel implements Serializable {
+public class SwapiPlanetSearchResultModel implements Serializable {
 	
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 3294559379684708747L;
-
+	private static final long serialVersionUID = -2942345593651928983L;
+	
 	private Long count;
-	
 	private String next;
-	
 	private String previous;
-	
-	private List<PlanetModel> results;
+	private List<SwapiPlanetModel> results;
 
 	public Long getCount() {
 		return count;
@@ -48,12 +45,12 @@ public class PlanetSearchResultModel implements Serializable {
 		this.previous = previous;
 	}
 
-	public List<PlanetModel> getResults() {
+	public List<SwapiPlanetModel> getResults() {
 		return results;
 	}
 
-	public void setResults(List<PlanetModel> results) {
+	public void setResults(List<SwapiPlanetModel> results) {
 		this.results = results;
 	}
-
+	
 }

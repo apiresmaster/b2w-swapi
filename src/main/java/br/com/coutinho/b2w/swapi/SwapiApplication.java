@@ -14,10 +14,10 @@ import org.springframework.data.web.config.EnableSpringDataWebSupport;
  */
 @SpringBootApplication
 @EnableSpringDataWebSupport
-public class Application extends SpringBootServletInitializer {
+public class SwapiApplication extends SpringBootServletInitializer {
 
     public static void main(String[] args) {
-        SpringApplication.run(Application.class, args);
+        SpringApplication.run(SwapiApplication.class, args);
     }
 
 }

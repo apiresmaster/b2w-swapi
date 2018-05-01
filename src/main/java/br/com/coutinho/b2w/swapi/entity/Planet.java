@@ -6,11 +6,10 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import org.springframework.beans.BeanUtils;
+
+import br.com.coutinho.b2w.swapi.model.PlanetModel;
 
 /**
  * Planet JPA entity
@@ -20,7 +19,6 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
  */
 @Entity
 @Table(name = "planet")
-@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Planet {
 
 	@Id
@@ -36,11 +34,6 @@ public class Planet {
 
 	@Column(name = "terrain", nullable = false)
 	private String terrain;
-
-	@Transient
-	@JsonSerialize
-	@JsonDeserialize
-	private Integer movieAppearancesAmount;
 
 	public Long getId() {
 		return id;
@@ -73,13 +66,11 @@ public class Planet {
 	public void setTerrain(String terrain) {
 		this.terrain = terrain;
 	}
-
-	public Integer getMovieAppearancesAmount() {
-		return movieAppearancesAmount;
-	}
-
-	public void setMovieAppearancesAmount(Integer movieAppearancesAmount) {
-		this.movieAppearancesAmount = movieAppearancesAmount;
+	
+	public PlanetModel toModel() {
+		PlanetModel model = new PlanetModel();
+		BeanUtils.copyProperties(this, model);
+		return model;
 	}
 	
 }

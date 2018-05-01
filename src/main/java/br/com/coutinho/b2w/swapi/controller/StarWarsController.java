@@ -18,8 +18,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.com.coutinho.b2w.swapi.entity.Planet;
 import br.com.coutinho.b2w.swapi.exception.ValidationException;
+import br.com.coutinho.b2w.swapi.model.PlanetModel;
 import br.com.coutinho.b2w.swapi.model.PlanetSearchResultModel;
 import br.com.coutinho.b2w.swapi.service.PlanetService;
 
@@ -43,16 +43,16 @@ public class StarWarsController {
 		//Process and return
 		try {
 			return ResponseEntity.ok(planetService.findAll(pageRequest, req.getRequestURL().toString()));
-		} catch (Exception e) {
-			LOGGER.error("Find all planets error", e);
+		} catch (ValidationException e) {
+			LOGGER.error("Find all planets validation error", e);
 			return ResponseEntity.badRequest().build();
 		}
 	}
 	
 	@RequestMapping(value = "/planets/{planetQuery}", method = RequestMethod.GET)
-	public ResponseEntity<Planet> getPlanetByQuery(@PathVariable("planetQuery") String planetQuery) {
+	public ResponseEntity<PlanetModel> getPlanetByQuery(@PathVariable("planetQuery") String planetQuery) {
 		//Process
-		Planet planet = planetService.findPlanetByQuery(planetQuery);
+		PlanetModel planet = planetService.findPlanetByQuery(planetQuery);
 		
 		//Return
 		if (planet != null) {
@@ -62,7 +62,7 @@ public class StarWarsController {
 	}
 
 	@RequestMapping(value = "/planets", method = RequestMethod.POST)
-	public ResponseEntity<Planet> addPlanet(@RequestBody Planet newPlanet, HttpServletRequest req) {
+	public ResponseEntity<PlanetModel> addPlanet(@RequestBody PlanetModel newPlanet, HttpServletRequest req) {
 		//Process and return
 		try {
 			newPlanet = planetService.save(newPlanet);
@@ -78,7 +78,7 @@ public class StarWarsController {
 	}
 
 	@RequestMapping(value = "/planets/{planetId}", method = RequestMethod.DELETE)
-	public ResponseEntity<Planet> removePlanet(@PathVariable("planetId") Long planetId) {
+	public ResponseEntity removePlanet(@PathVariable("planetId") Long planetId) {
 		//Validate
 		if (planetId == null) {
 			return ResponseEntity.badRequest().build();
