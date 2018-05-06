@@ -1,7 +1,7 @@
 B2W - Desafio - Star Wars API
 ==================================================
 
-Esta API foi desenvolvida par atender ao desafio da B2W, para criação de uma API para um jogo com o tema Star Wars.
+Esta API foi desenvolvida para atender ao desafio da B2W, para criação de uma API para um jogo com o tema Star Wars.
 
 Arquitetura
 -----------
