@@ -38,10 +38,19 @@ Métodos
 * Listar planetas: 
   - GET
   - /b2w-swapi/planets/
+  - Lista paginada. Padrão de 10 planetas por página.
 
 * Incluir planeta: 
   - POST
   - /b2w-swapi/planets/
+  - Corpo da requisição:
+```sh
+{
+	"name": "",
+	"climate": "",
+	"terrain": ""
+}
+```
 
 * Obter planeta por ID: 
   - GET
