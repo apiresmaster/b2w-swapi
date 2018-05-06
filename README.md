@@ -1,92 +1,56 @@
-Welcome to the AWS CodeStar sample web service
+B2W - Desafio - Star Wars API
 ==================================================
 
-This sample code helps get you started with a simple Java web service
-deployed by AWS CodeDeploy to an Amazon EC2 server.
+Esta API foi desenvolvida par atender ao desafio da B2W, para criação de uma API para um jogo com o tema Star Wars.
 
-What's Here
+Arquitetura
 -----------
 
-This sample includes:
+Esta aplicação foi desenvolvida usando:
 
-* README.md - this file
-* appspec.yml - this file is used by AWS CodeDeploy when deploying the web
-  service to EC2
-* buildspec.yml - this file is used by AWS CodeBuild to build the web
-  service
-* pom.xml - this file is the Maven Project Object Model for the web service
-* src/main - this directory contains your Java service source files
-* src/test - this directory contains your Java service unit test files
-* scripts/ - this directory contains scripts used by AWS CodeDeploy when
-  installing and deploying your service on the Amazon EC2 instance
+* Java 8
+* Maven 4.0.0
+* Spring Boot 1.4.4
+* Spring Security 4
+* Apache Commons Lang 3
+* Google Guava 21.0
 
 
-Getting Started
+Começando
 ---------------
 
-These directions assume you want to develop on your local computer, and not
-from the Amazon EC2 instance itself. If you're on the Amazon EC2 instance, the
-virtual environment is already set up for you, and you can start working on the
-code.
+Para rodar a aplicação, basta executar a classe `SwapiApplication.java`. Essa classe subirá uma versão do Tomcat e a aplicação estará disponível.
 
-To work on the sample code, you'll need to clone your project's repository to your
-local computer. If you haven't, do that first. You can find instructions in the
-AWS CodeStar user guide.
-
-1. Install maven.  See https://maven.apache.org/install.html for details.
-
-2. Install tomcat.  See https://tomcat.apache.org/tomcat-7.0-doc/setup.html for
-   details.
-
-3. Build the service.
-
-        $ mvn -f pom.xml compile
-        $ mvn -f pom.xml package
-
-4. Copy the built service to the Tomcat webapp directory.  The actual
-   location of that directory will vary depending on your platform and
-   installation.
-
-        $ cp target/ROOT.war <tomcat webapp directory>
-
-4. Restart your tomcat server
-
-5. Open http://127.0.0.1:8080/ in a web browser to view your service.
-
-What Do I Do Next?
+Usuários
 ------------------
 
-Once you have a virtual environment running, you can start making changes to
-the sample Java web service. We suggest making a small change to
-/src/main/java/com/aws/codestar/projecttemplates/controller/HelloWorldController.java
-first, so you can see how changes pushed to your project's repository are automatically
-picked up by your project pipeline and deployed to the Amazon EC2 instance. (You can watch
-the pipeline progress on your project dashboard.) Once you've seen how that works, start
-developing your own code, and have fun!
+A API REST foi desenvolvida com usando Basic Authentication. Os usuários são:
 
-To run your tests locally, go to the root directory of the sample code and run the
-`mvn clean compile test` command, which AWS CodeBuild also runs through your `buildspec.yml` file.
+* Nome: admin / Senha: admin123
+  Permissão em todos os métodos da API (GET, POST e DELETE).
+ 
+* Nome: user / Senha: user123
+  Permissão somente nos métodos GET da API.
 
-To test your new code during the release process, modify the existing tests or add tests
-to the tests directory. AWS CodeBuild will run the tests during the build stage of your
-project pipeline. You can find the test results in the AWS CodeBuild console.
-
-Learn more about Maven's [Standard Directory Layout](https://maven.apache.org/guides/introduction/introduction-to-the-standard-directory-layout.html).
-
-Learn more about AWS CodeBuild and how it builds and tests your application here:
-https://docs.aws.amazon.com/codebuild/latest/userguide/concepts.html
-
-Learn more about AWS CodeStar by reading the user guide. Ask questions or make
-suggestions on our forum.
-
-User Guide: http://docs.aws.amazon.com/codestar/latest/userguide/welcome.html
-
-Forum: https://forums.aws.amazon.com/forum.jspa?forumID=248
-
-What Should I Do Before Running My Project in Production?
+Métodos
 ------------------
 
-AWS recommends you review the security best practices recommended by the framework
-author of your selected sample application before running it in production. You
-should also regularly review and apply any available patches or associated security
-advisories for dependencies used within your application.
+* Listar planetas: 
+  - GET
+  - /b2w-swapi/planets/
+
+* Incluir planeta: 
+  - POST
+  - /b2w-swapi/planets/
+
+* Obter planeta por ID: 
+  - GET
+  - /b2w-swapi/planets/{ID}
+
+* Obter planeta por Nome: 
+  - GET
+  - /b2w-swapi/planets/{NOME}
+
+* Excluir planeta por ID: 
+  - DELETE
+  - /b2w-swapi/planets/{ID}
