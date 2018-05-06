@@ -27,10 +27,10 @@ Usuários
 A API REST foi desenvolvida com usando Basic Authentication. Os usuários são:
 
 * Nome: admin / Senha: admin123
-  Permissão em todos os métodos da API (GET, POST e DELETE).
+  - Permissão em todos os métodos da API (GET, POST e DELETE).
  
 * Nome: user / Senha: user123
-  Permissão somente nos métodos GET da API.
+  - Permissão somente nos métodos GET da API.
 
 Métodos
 ------------------
