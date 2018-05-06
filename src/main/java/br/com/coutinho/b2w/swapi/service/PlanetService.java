@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,7 +26,7 @@ import br.com.coutinho.b2w.swapi.repository.PlanetRepository;
  * @author Rafael Coutinho
  *
  */
-@Service
+@Component
 @Transactional(propagation = Propagation.NOT_SUPPORTED)
 public class PlanetService {
 	

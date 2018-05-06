@@ -2,8 +2,6 @@ package br.com.coutinho.b2w.swapi.controller;
 
 import java.net.URI;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,11 +10,14 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import br.com.coutinho.b2w.swapi.exception.ValidationException;
 import br.com.coutinho.b2w.swapi.model.PlanetModel;
@@ -38,18 +39,18 @@ public class StarWarsController {
 	@Autowired
 	private PlanetService planetService;
 
-	@RequestMapping(value = "/planets", method = RequestMethod.GET)
-	public ResponseEntity<PlanetSearchResultModel> listPlanets(@PageableDefault(value = 10) Pageable pageRequest, HttpServletRequest req) {
+	@GetMapping(path = "/planets")
+	public ResponseEntity<PlanetSearchResultModel> listPlanets(@PageableDefault(value = 10) Pageable pageRequest) {
 		//Process and return
 		try {
-			return ResponseEntity.ok(planetService.findAll(pageRequest, req.getRequestURL().toString()));
+			return ResponseEntity.ok(planetService.findAll(pageRequest, ServletUriComponentsBuilder.fromCurrentRequest().toUriString()));
 		} catch (ValidationException e) {
 			LOGGER.error("Find all planets validation error", e);
 			return ResponseEntity.badRequest().build();
 		}
 	}
 	
-	@RequestMapping(value = "/planets/{planetQuery}", method = RequestMethod.GET)
+	@GetMapping(path = "/planets/{planetQuery}")
 	public ResponseEntity<PlanetModel> getPlanetByQuery(@PathVariable("planetQuery") String planetQuery) {
 		//Process
 		PlanetModel planet = planetService.findPlanetByQuery(planetQuery);
@@ -61,12 +62,12 @@ public class StarWarsController {
 		return ResponseEntity.notFound().build();
 	}
 
-	@RequestMapping(value = "/planets", method = RequestMethod.POST)
-	public ResponseEntity<PlanetModel> addPlanet(@RequestBody PlanetModel newPlanet, HttpServletRequest req) {
+	@PostMapping(path = "/planets")
+	public ResponseEntity<PlanetModel> addPlanet(@RequestBody PlanetModel newPlanet) {
 		//Process and return
 		try {
 			newPlanet = planetService.save(newPlanet);
-			URI planetUrl = URI.create(req.getRequestURL().toString() + newPlanet.getId() + "/").resolve(req.getContextPath());
+			URI planetUrl = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(newPlanet.getId()).toUri();
 			return ResponseEntity.created(planetUrl).build();
 		} catch (ValidationException e) {
 			LOGGER.error("Validation error while trying to add planet.", e);
@@ -77,13 +78,8 @@ public class StarWarsController {
 		}
 	}
 
-	@RequestMapping(value = "/planets/{planetId}", method = RequestMethod.DELETE)
+	@DeleteMapping(path = "/planets/{planetId}")
 	public ResponseEntity removePlanet(@PathVariable("planetId") Long planetId) {
-		//Validate
-		if (planetId == null) {
-			return ResponseEntity.badRequest().build();
-		}
-
 		//Process and return
 		try {
 			planetService.delete(planetId);
