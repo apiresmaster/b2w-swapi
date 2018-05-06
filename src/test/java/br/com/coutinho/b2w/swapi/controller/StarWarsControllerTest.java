@@ -21,6 +21,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -35,8 +37,8 @@ import br.com.coutinho.b2w.swapi.service.PlanetService;
 @RunWith(SpringRunner.class)
 @WebMvcTest(value = StarWarsController.class, secure = false)	
 public class StarWarsControllerTest {
-    
-    @Autowired
+	
+	@Autowired
 	private MockMvc mockMvc;
 
     @MockBean(name="planetService")
@@ -49,6 +51,7 @@ public class StarWarsControllerTest {
     		"}";
     
     @Test
+    @WithMockUser(username = "user", roles = {"USER"})
     public void testListPlanetsRequestWithSuccess() throws Exception {
 		when(planetService.findAll(any(Pageable.class), anyString())).thenReturn(new PlanetSearchResultModel());
 
@@ -64,6 +67,7 @@ public class StarWarsControllerTest {
     }
     
     @Test
+    @WithMockUser(username = "user", roles = {"USER"})
     public void testListPlanetsRequestWithoutValidationError() throws Exception {
 		when(planetService.findAll(any(Pageable.class), anyString())).thenThrow(new ValidationException(""));
 
@@ -79,6 +83,7 @@ public class StarWarsControllerTest {
     }
     
     @Test
+    @WithMockUser(username = "user", roles = {"USER"})
     public void testGetPlanetRequestWithSuccess() throws Exception {
 		when(planetService.findPlanetByQuery(anyString())).thenReturn(new PlanetModel());
 
@@ -94,6 +99,7 @@ public class StarWarsControllerTest {
     }
     
     @Test
+    @WithMockUser(username = "user", roles = {"USER"})
     public void testGetPlanetRequestNotFound() throws Exception {
 		when(planetService.findPlanetByQuery(anyString())).thenReturn(null);
 
@@ -109,6 +115,7 @@ public class StarWarsControllerTest {
     }
     
     @Test
+    @WithMockUser(username = "admin", roles = {"ADMIN"})
     public void testPostPlanetRequestWithSuccess() throws Exception {
     	PlanetModel planetMockSave = new PlanetModel();
     	planetMockSave.setId(1L);
@@ -130,6 +137,7 @@ public class StarWarsControllerTest {
     }
     
     @Test
+    @WithMockUser(username = "admin", roles = {"ADMIN"})
     public void testPostPlanetRequestWithValidationError() throws Exception {
 		when(planetService.save(any(PlanetModel.class))).thenThrow(new ValidationException(""));
 
@@ -146,6 +154,7 @@ public class StarWarsControllerTest {
     }
     
     @Test
+    @WithMockUser(username = "admin", roles = {"ADMIN"})
     public void testPostPlanetRequestWithDataIntegrityError() throws Exception {
 		when(planetService.save(any(PlanetModel.class))).thenThrow(new DataIntegrityViolationException(""));
 
@@ -162,6 +171,7 @@ public class StarWarsControllerTest {
     }
     
     @Test
+    @WithMockUser(username = "admin", roles = {"ADMIN"})
     public void testDeletePlanetRequestWithSuccess() throws Exception {
     	doNothing().when(planetService).delete(anyLong());
     	
@@ -177,6 +187,7 @@ public class StarWarsControllerTest {
     }
     
     @Test
+    @WithMockUser(username = "admin", roles = {"ADMIN"})
     public void testDeletePlanetRequestWithEmptyResultError() throws Exception {
     	doThrow(new EmptyResultDataAccessException(0)).when(planetService).delete(anyLong());
     	

@@ -10,6 +10,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -39,6 +40,7 @@ public class StarWarsController {
 	@Autowired
 	private PlanetService planetService;
 
+	@PreAuthorize("hasRole('ROLE_USER') OR hasRole('ROLE_ADMIN')")
 	@GetMapping(path = "/planets")
 	public ResponseEntity<PlanetSearchResultModel> listPlanets(@PageableDefault(value = 10) Pageable pageRequest) {
 		//Process and return
@@ -49,7 +51,8 @@ public class StarWarsController {
 			return ResponseEntity.badRequest().build();
 		}
 	}
-	
+
+	@PreAuthorize("hasRole('ROLE_USER') OR hasRole('ROLE_ADMIN')")
 	@GetMapping(path = "/planets/{planetQuery}")
 	public ResponseEntity<PlanetModel> getPlanetByQuery(@PathVariable("planetQuery") String planetQuery) {
 		//Process
@@ -62,6 +65,7 @@ public class StarWarsController {
 		return ResponseEntity.notFound().build();
 	}
 
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@PostMapping(path = "/planets")
 	public ResponseEntity<PlanetModel> addPlanet(@RequestBody PlanetModel newPlanet) {
 		//Process and return
@@ -78,6 +82,7 @@ public class StarWarsController {
 		}
 	}
 
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@DeleteMapping(path = "/planets/{planetId}")
 	public ResponseEntity removePlanet(@PathVariable("planetId") Long planetId) {
 		//Process and return
