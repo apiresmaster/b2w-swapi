@@ -29,7 +29,7 @@ public class SwapiCacheService {
 	private static final Logger LOGGER = LoggerFactory.getLogger(SwapiCacheService.class);
 	private static final String CACHE_KEY = "planetHashMap";
 	
-	private static LoadingCache<String, HashMap<String, Integer>> planetAppearancesInFilmsCache;
+	private LoadingCache<String, HashMap<String, Integer>> planetAppearancesInFilmsCache;
 	
 	@Autowired
 	private SwapiService swapiService;
@@ -39,14 +39,14 @@ public class SwapiCacheService {
 	 */
 	@PostConstruct
 	public void init() {
-		LOGGER.debug("SwapiCacheService - Init - BEGIN");
+		LOGGER.debug("SwapiCacheService - Init - {}", "BEGIN");
 		planetAppearancesInFilmsCache = CacheBuilder.newBuilder()
 	       .maximumSize(100)
 	       .expireAfterWrite(1, TimeUnit.HOURS)
 	       .build(new CacheLoader<String, HashMap<String, Integer>>() {
 					@Override
 					public HashMap<String, Integer> load(String key) throws Exception {
-						LOGGER.debug("SwapiCacheService - Loading planet hash map by key: {0}", key);
+						LOGGER.debug("SwapiCacheService - Loading planet hash map by key: {}", key);
 						return swapiService.getPlanetFilmQuantityHash();
 					}
 	           }
@@ -54,9 +54,9 @@ public class SwapiCacheService {
 		try {
 			planetAppearancesInFilmsCache.get(CACHE_KEY);
 		} catch (ExecutionException e) {
-			LOGGER.error("Error while trying to get film appearances by planet. Cache not loaded.");
+			LOGGER.error("Error while trying to get film appearances by planet. Cache not loaded. {}", e.getMessage());
 		}
-		LOGGER.debug("SwapiCacheService - Init - END");
+		LOGGER.debug("SwapiCacheService - Init - {}", "END");
 	}
 	
 	/**
@@ -72,7 +72,7 @@ public class SwapiCacheService {
 				return filmAppearances;
 			}
 		} catch (ExecutionException e) {
-			LOGGER.error("Error while trying to get film appearances by planet. Returning zero.");
+			LOGGER.error("Error while trying to get film appearances by planet. Returning zero.  {}", e.getMessage());
 		}
 		return 0;
 	}

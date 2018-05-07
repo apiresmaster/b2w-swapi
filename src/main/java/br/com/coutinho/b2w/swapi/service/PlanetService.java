@@ -73,20 +73,19 @@ public class PlanetService {
 	}
 	
 	private List<PlanetModel> getPlanetEntityToModelList(List<Planet> planetList) {
+		List<PlanetModel> modelList = new ArrayList<PlanetModel>();
 		if (planetList != null) {
-			List<PlanetModel> modelList = new ArrayList<PlanetModel>();
 			for (Planet planet : planetList) {
 				PlanetModel model = planet.toModel();
 				model.setFilmAppearancesNumber(swapiCacheService.getFilmAppearancesByPlanetName(model.getName()));
 				modelList.add(model);
 			}
-			return modelList;
 		}
-		return null;
+		return modelList;
 	}
 	
 	private String getPaginationUrl(String url, Integer page, Integer size) throws URISyntaxException {
-		StringBuffer urlBuffer = new StringBuffer(getUrlWithoutParameters(url));
+		StringBuilder urlBuffer = new StringBuilder(getUrlWithoutParameters(url));
 		urlBuffer.append("?page=").append(page).append("&size=").append(size);
 		
 		return urlBuffer.toString();
@@ -113,7 +112,7 @@ public class PlanetService {
 			Long planetId = Long.valueOf(planetQuery);
 			planet = planetRepository.findOne(planetId);
 		} catch (NumberFormatException nfe) {
-			LOGGER.error("Error while converting planet query to long. Trying to get planet by name.");
+			LOGGER.error("Error while converting planet query to long. Trying to get planet by name.  {}", nfe.getMessage());
 			planet = planetRepository.findByName(planetQuery);
 		}
 		if (planet != null) {
@@ -134,7 +133,7 @@ public class PlanetService {
 	@Transactional
 	public PlanetModel save(PlanetModel newPlanet) throws ValidationException {
 		//Validate
-		if (newPlanet == null || (newPlanet != null && newPlanet.getId() != null)) {
+		if (newPlanet == null || newPlanet.getId() != null) {
 			throw new ValidationException("Invalid object to save");
 		}
 		return planetRepository.save(newPlanet.toEntity()).toModel();

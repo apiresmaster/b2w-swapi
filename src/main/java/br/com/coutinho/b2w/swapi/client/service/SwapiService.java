@@ -54,8 +54,8 @@ public class SwapiService {
 				for (SwapiPlanetModel planet : result.getResults()) {
 					planetHash.put(planet.getName(), planet.getFilms().size());
 				}
+				apiUrl = result.getNext();
 			}
-			apiUrl = result.getNext();
 		} while (StringUtils.isNotEmpty(apiUrl));
 		
 		return planetHash;
@@ -74,7 +74,7 @@ public class SwapiService {
         ResponseEntity<SwapiPlanetSearchResultModel> response = restTemplate.exchange(apiUrl, HttpMethod.GET, entity, SwapiPlanetSearchResultModel.class);
  
         HttpStatus statusCode = response.getStatusCode();
-        LOGGER.debug("Response Status Code: " + statusCode);
+        LOGGER.debug("Response Status Code: {}", statusCode);
  
         if (statusCode == HttpStatus.OK) {
         	SwapiPlanetSearchResultModel result = response.getBody();

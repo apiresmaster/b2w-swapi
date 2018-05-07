@@ -90,7 +90,7 @@ public class StarWarsController {
 			planetService.delete(planetId);
 			return ResponseEntity.noContent().build();
 		} catch (EmptyResultDataAccessException e) {
-			LOGGER.error("Planet id not found.");
+			LOGGER.error("Planet id not found.  {}", e.getMessage());
 			return ResponseEntity.badRequest().build();
 		}
 	}
